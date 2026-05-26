@@ -40,27 +40,53 @@ INSTALLED_APPS = [
 
     #3rd party apps 
     'rest_framework',
+    'corsheaders',
+    'rest_framework.authtoken', # manages tokens
+    'dj_rest_auth', # auth endpoints (log in/out and password reset/change)
+    'drf_spectacular',
 
     #local apps
     'tour_app.apps.TourAppConfig',
 ]
 
-REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES" = [
-        "rest_framework.permissions.AllowAny",
+REST_FRAMEWORK ={
+    "DEFAULT_PERMISSION_CLASSES" : [
+        "tour_app.permissions.IsAdminOrReadOnly",
     ],
-}
+    "DEFAULIT_AUTHENTICATION_CLASSES": [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    "DEFAULT_SCHEMA_CLASS" : "drf_spectacular.openapi.AutoSchema",
+    }
 
+SPECTACULAR_SETTINGS = {
+  "TITLE" : "NAKURU TOURISM API",
+  "DESCRIPTION": " AN API SHOWING TOURISM ATTRACTION SITES DATA",
+}
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware', #added
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+# cross origin resource sharing
+CORS_ALLOWED_ORIGINS = (
+    "http://localhost:3000",
+    "http://localhost:8000", 
+    "http://localhost:8501"
+)
 
+# to avoid a website to cchange the local architecture
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000',
+    'http://localhost:6501',
+]
+                        
 ROOT_URLCONF = 'nakuru_tourism_project.urls'
 
 TEMPLATES = [
@@ -127,3 +153,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+

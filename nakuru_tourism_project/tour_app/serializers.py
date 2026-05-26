@@ -15,7 +15,7 @@ class AttractionSiteSerializer(serializers.ModelSerializer):
         fields = ['name', 'description', 'category',
                   'latitude', 'longitude',  'address',
                     'opening_hours', 'contact_phone', 'contact_email', 
-                    ' website ', 'image', 
+                    'website', 'image', 
                     ]
 
 class PricingSerializer(serializers.ModelSerializer):
@@ -32,9 +32,9 @@ class HotelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hotel
         fields = [
-           ' name', 'description', 'latitude', 'longitude',  'address',
-            'contact_phone', 'contact_email', 'website', 'price_per_night '
-            'total_rooms', 'available_rooms ', 'amenities', 'check_out_time'
+           'name', 'description', 'latitude', 'longitude',  'address',
+            'contact_phone', 'contact_email', 'website', 'price_per_night',
+            'total_rooms', 'available_rooms', 'amenities', 'check_out_time'
     
         ]
 

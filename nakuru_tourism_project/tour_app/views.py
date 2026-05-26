@@ -24,7 +24,7 @@ class AttractionSiteRetrieve(RetrieveAPIView):
     serializer_class = AttractionSiteSerializer
 
 # pricibf views
-class PricingSiteList(ListAPIView):
+class PricingList(ListAPIView):
     queryset = Pricing.objects.all()
     serializer_class = PricingSerializer
 
