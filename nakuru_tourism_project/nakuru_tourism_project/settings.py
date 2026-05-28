@@ -11,21 +11,26 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import environ
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+env = environ.Env()
+environ.Env.read_env(BASE_DIR/ '.env')
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-=6b(n*a*@ed%0zdkbyw6g49wphv3#rdsro!5e5b=z6)-glnpq3'
+SECRET_KEY = env.str("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG", default=True)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -36,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'whitenoise.runserver_nostatic', #added
     'django.contrib.staticfiles',
 
     #3rd party apps 
@@ -53,7 +59,7 @@ REST_FRAMEWORK ={
     "DEFAULT_PERMISSION_CLASSES" : [
         "tour_app.permissions.IsAdminOrReadOnly",
     ],
-    "DEFAULIT_AUTHENTICATION_CLASSES": [
+    "DEFAULT_AUTHENTICATION_CLASSES": [
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ],
@@ -67,6 +73,7 @@ SPECTACULAR_SETTINGS = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware", # added
     'corsheaders.middleware.CorsMiddleware', #added
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -111,9 +118,14 @@ WSGI_APPLICATION = 'nakuru_tourism_project.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
+    
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': 'nakuru_tourism_db',
+        'USER': 'postgres',
+        'PASSWORD' : '987654321Nara',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
 
@@ -152,6 +164,19 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [BASE_DIR / "static"] # new
+STATIC_ROOT = BASE_DIR / "staticfiles" # new
+STATICFILES_STORAGE ="whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+VENV_BASE = Path(os.environ.get('VIRTUAL_ENV', BASE_DIR / 'tour_env'))
+if os.name =='nt':
+
+    GDAL_PATH =r"C:\Users\DIGIFIT MEDIA\Documents\tour_env\Lib\site-packages\osgeo"
+
+    os.environ['PATH'] = str(GDAL_PATH)+ os.path.pathsep + os.environ['PATH']
+
+    GDAL_LIBRARY_PATH = r"C:\Users\DIGIFIT MEDIA\Documents\tour_env\Lib\site-packages\osgeo\gdal.dll"
+    GEOS_LIBRARY_PATH = r"C:\Users\DIGIFIT MEDIA\Documents\tour_env\Lib\site-packages\osgeo\geos_c.dll"
+    
